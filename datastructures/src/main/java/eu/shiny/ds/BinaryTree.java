@@ -1,3 +1,5 @@
+package eu.shiny.ds;
+
 
 public class BinaryTree {
     public Node root;

@@ -1,3 +1,5 @@
+package eu.shiny.ds;
+
 import java.util.HashSet;
 import java.util.Set;
 
