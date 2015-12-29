@@ -1,19 +1,25 @@
 package eu.shiny.ds;
 
 
+import java.util.Stack;
+
 public class BinaryTree {
     public Node root;
     
     public static class Node{
-        public int key;
+        public int val;
         public String name;
-        
-        public Node leftChild;
-        public Node rightChild;
+        public int ht;
+        public Node left;
+        public Node right;
         
         public Node(int key, String name){
-            this.key = key;
+            this.val = key;
             this.name = name;
+        }
+
+        public Node(){
+            //DO nothing
         }
     }
     
@@ -23,25 +29,161 @@ public class BinaryTree {
         }else{
             Node parentNode =  root;
             while(true){
-                if(parentNode.key > node.key){
-                    if(parentNode.leftChild == null){
-                        parentNode.leftChild = node;
+                if(parentNode.val > node.val){
+                    if(parentNode.left == null){
+                        parentNode.left = node;
                         return;
                     }else{
-                        parentNode = parentNode.leftChild;
+                        parentNode = parentNode.left;
                     }
                 }else{
-                    if(parentNode.rightChild == null){
-                        parentNode.rightChild = node;
+                    if(parentNode.right == null){
+                        parentNode.right = node;
                         return;
                     }else{
-                        parentNode = parentNode.rightChild;
+                        parentNode = parentNode.right;
                     }
                 }
             }
         }
     }
-    
+
+    void LevelOrder(Node root){
+        if(root == null){
+            return;
+        }else{
+            java.util.Queue<Node> queue = new java.util.concurrent.LinkedBlockingDeque<Node>();
+            java.util.Stack stack = new Stack();
+
+            queue.add(root);
+            while(!queue.isEmpty()){
+                System.out.print(root.val + " ");
+                Node node = queue.poll();
+                if (node.left != null){
+                    queue.add(node.left);
+                }
+                if(node.right != null){
+                    queue.add(node.right);
+                }
+            }
+
+        }
+    }
+
+
+    static Node balanceTree(Node root){
+        if(root == null) return null;
+
+        if(bf(root) < 0){
+            if(bf(root) < -1 && (bf(root.right) == 1 || bf(root.right) == -1)){
+                if(bf(root.right) == 1){
+                    Node temp = root.right;
+                    root.right = temp.left;
+                    temp.left = root.right.right;
+                    root.right.right =temp;
+                }
+                Node t2 = root;
+                root = root.right;
+                t2.right = root.left;
+                root.left = t2;
+            }else{
+                root.right = balanceTree(root.right);
+            }
+        }else if(bf(root) > 0){
+            if(bf(root) > 1 && (bf(root.left) == -1 || bf(root.left) == 1)){
+                if(bf(root.left) == -1){
+                    Node temp = root.left;
+                    root.left = temp.right;
+                    temp.right = root.left.left;
+                    root.left.left = temp;
+                }
+                Node t2 = root;
+                root = root.left;
+                t2.left = root.right;
+                root.right = t2;
+            }else{
+                root.left = (balanceTree(root.left));
+            }
+
+        }
+
+        return root;
+
+    }
+
+   /* Class node is defined as :
+    class Node
+       int val;   //Value
+       int ht;      //Height
+       Node left;   //Left child
+       Node right;   //Right child
+
+   */
+
+    static Node insert(Node root,int val)
+    {
+        Node node = new Node();
+        node.val = val;
+        if(root == null){
+            root = node;
+        }
+        Node focusNode = root;
+        while(true){
+            if(val > focusNode.val){
+                if(focusNode.right == null){
+                    focusNode.right = node;
+                    break;
+                }else{
+                    focusNode = focusNode.right;
+                }
+            }else{
+                if(focusNode.left == null){
+                    focusNode.left = node;
+                    break;
+                }else{
+                    focusNode = focusNode.left;
+                }
+            }
+        }
+
+        Node balancedRoot = balanceTree(root);
+        updateHeight(balancedRoot);
+        //balance the tree from here
+        return balancedRoot;
+
+    }
+
+    static void updateHeight(Node root){
+        if(root == null){
+            return ;
+        }
+        root.ht = height(root);
+        updateHeight(root.right);
+        updateHeight(root.left);
+    }
+
+    static int bf(Node node){
+        int left = (node.left != null) ?  height(node.left) : -1;
+        int right = (node.right != null) ?  height(node.right) : -1;
+
+        return left - right;
+    }
+
+    static int height(Node node){
+        if(node == null){
+            return -1;
+        }
+
+        return 1 + max(height(node.left), height(node.right));
+    }
+
+    static int max(int num1, int num2){
+        return num1>num2 ? num1: num2;
+    }
+
+
+
+
     public static void main(String[] args) {
         BinaryTree tree = new BinaryTree();
         
@@ -61,71 +203,10 @@ public class BinaryTree {
         tree.addNode(new Node(10, ""));
         tree.addNode(new Node(20, ""));
         tree.addNode(new Node(40, ""));
-        tree.printString();
-        
+//        tree.printString();
+
     }
-    
-    public void printString(){
-          breadthFirstSearch(root);
-            
-//        printNode(root);
-//        
-//        Node focusNode = root;
-//        Node nextFocusNode = null;
-//        boolean isLeftNode = false;
-//        boolean isRIghtNode = false;
-////        
-//        while(focusNode != null ){
-//                printNode(focusNode.leftChild);
-//                printNode(focusNode.rightChild);
-//                
-//                if(nextFocusNode != null){
-//                    printNode(nextFocusNode.leftChild);
-//                    printNode(nextFocusNode.rightChild);
-//                }
-//            
-//                focusNode = focusNode.leftChild;
-//                nextFocusNode = focusNode.rightChild;
-//        }
-//        
-//        printNode(root.leftChild);
-//        printNode(root.rightChild);
-//        
-//        
-//        printNode(root.leftChild.leftChild);
-//        printNode(root.leftChild.rightChild);
-//        
-//        printNode(root.rightChild.leftChild);
-//        printNode(root.rightChild.rightChild);
-//
-//        printNode(root.leftChild.leftChild.leftChild);
-//        printNode(root.leftChild.leftChild.rightChild);
-//        
-//        printNode(root.leftChild.rightChild.leftChild);
-//        printNode(root.leftChild.rightChild.rightChild);
-    }
-    
-    public void postOrderTraversal(Node node){
-        if(node!= null){
-            printNode(node.leftChild);
-            printNode(node.rightChild);
-            System.out.println(node.key);
-        }
-    }
-    
-    public void printNode(Node node){
-        if(node!= null){
-            System.out.println(node.key);
-            
-        }
-    }
-    
-    public void breadthFirstSearch(Node node){
-        
-        if(node != null){
-            System.out.println(node.key);
-            
-        }
-    }
-    
+
+
+
 }
