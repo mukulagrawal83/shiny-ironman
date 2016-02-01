@@ -22,8 +22,7 @@ public class SherlockAndValidString {
             if(arr[index] == 0){
                 len++;
             }
-            arr[index] += 1;
-
+           arr[index] += 1;
         }
 
 

@@ -11,6 +11,8 @@ public class BetterProgrammerTask {
             return 0;
         }
 
+
+
         int count = 1;
         s = s.trim();
         /*

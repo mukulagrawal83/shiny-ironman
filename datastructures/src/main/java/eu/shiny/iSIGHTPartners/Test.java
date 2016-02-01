@@ -19,6 +19,7 @@ public class Test {
         System.out.println(getStopsOfElevator(A, B, 3, 5, 2000));
     }
 
+
     public static int getLengthOfLongestValidPassword(String S) {
         int result = -1;
 
