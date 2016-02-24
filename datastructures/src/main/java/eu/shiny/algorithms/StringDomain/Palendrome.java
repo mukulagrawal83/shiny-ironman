@@ -1,47 +1,13 @@
 package eu.shiny.algorithms.StringDomain;
 
 import javax.print.DocFlavor;
+import java.util.Arrays;
 import java.util.Scanner;
 
 /**
  *Created by mukulagrawal on 1/31/16.
  */
 public class Palendrome {
-
-    public static void main(String[] args) {
-        /* Enter your code here. Read input from STDIN. Print output to STDOUT. Your class should be named Solution. */
-
-        Scanner in = new Scanner(System.in);
-
-        int t = Integer.parseInt(in.nextLine());
-
-        while(t > 0){
-            String str1 = in.nextLine();
-            String str2 = in.nextLine();
-
-            char[] char1 = str1.toCharArray();
-            char[] char2 = str2.toCharArray();
-
-            int[][] lpsarr1 = lpsarry(char1);
-            int[][] lpsarr2 = lpsarry(char2);
-
-            int result = 0;
-
-            if(lpsarr1[0][char1.length-1] % 2 == 0 || lpsarr2[0][char2.length-1] % 2 == 0){
-                result = lpsarr1[0][char1.length-1] + lpsarr2[0][char2.length-1];
-            }else {
-                result = lpsarr1[0][char1.length-1] + lpsarr2[0][char2.length-1];
-
-                if(getCentralofPalendrome(char1, lpsarr1) != getCentralofPalendrome(char2, lpsarr2)){
-                    result--;
-                }
-            }
-
-
-            System.out.println(result);
-            --t;
-        }
-    }
 
     public static int[][] lpsarry(char[] arr){
         int[][] pal = new int[arr.length][arr.length];
@@ -72,7 +38,63 @@ public class Palendrome {
 
     }
 
-    public static char getCentralofPalendrome(char[] arr, int[][] pal){
+    public static void main(String[] args) {
+        /* Enter your code here. Read input from STDIN. Print output to STDOUT. Your class should be named Solution. */
+
+        Scanner in = new Scanner(System.in);
+
+        int t = Integer.parseInt(in.nextLine());
+
+        while(t > 0){
+            String str1 = in.nextLine();
+            String str2 = in.nextLine();
+
+            char[] char1 = str1.toCharArray();
+            char[] char2 = str2.toCharArray();
+
+            int[][] lpsarr1 = lpsarry(char1);
+            int[][] lpsarr2 = lpsarry(char2);
+
+            int result = 0;
+
+            int length1 = lpsarr1[0][char1.length - 1];
+
+            int length2 = lpsarr2[0][char2.length - 1];
+
+            if(length1 % 2 == 0 || length2 % 2 == 0){
+                result = length1 + length2;
+            }else {
+                result = length1 + length2;
+
+                //////////
+
+                ////
+
+                char[] arr1 = getCentralofPalendrome(char1, lpsarr1);
+                char[] arr2 = getCentralofPalendrome(char2, lpsarr2);
+
+                boolean isSameCentralCharFound = false;
+
+                for (char c: arr1) {
+                    if(Arrays.binarySearch(arr2, c) >= 0){
+                        isSameCentralCharFound = true;
+                        break;
+                    }
+                }
+
+
+                if(!isSameCentralCharFound){
+                    result--;
+                }
+            }
+
+
+            System.out.println(result);
+            --t;
+        }
+    }
+
+    public static char[] getCentralofPalendrome(char[] arr, int[][] pal){
         char c = 0;
 
         int i = 0;
@@ -82,7 +104,7 @@ public class Palendrome {
 
         int central = index/2;
 
-        while(index >= central){
+        while(index > central && j > i){
             if(arr[i] == arr[j]){
                 i++;
                 j--;
@@ -96,8 +118,19 @@ public class Palendrome {
 
         }
 
-        return c;
+        char[] centralChar = new char[j -i + 1];
+        int m = 0;
+        while (j>=i){
+            centralChar[m] = arr[i];
+            ++i;
+            m++;
+        }
+
+        Arrays.sort(centralChar);
+
+        return centralChar;
     }
+
 
 
 }
